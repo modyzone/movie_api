@@ -28,7 +28,64 @@
       which movies you wish to include in your project. For example, you may want to build a movie
       application specifically for period or superhero movies, or a more diverse application with a wider user
       base. It’s up to you!</p>
-        </header>
+      </header>
+      <style>
+        table, th, td {
+          border: 1px solid black;
+        }
+        
+        table {
+          width: 100%;
+        }
+        </style>
+        <h2>movie_api</h2>
+      <table>
+        <tr>
+          <th>Request</th>
+          <th>URL</th>
+          <th>HTTP Method</th>
+          <th>Response Body data format</th>
+        </tr>
+        <tr>
+          <td>Get a list of movies</td>
+          <td>/movies</td>
+           <td>GET</td>
+          <td>A JSON object holding data about all the movies</td>
+        </tr>
+        <tr>
+          <td>Get data about a single movie by name
+            (description, genre, director, image URL, whether it’s featured or not)</td>
+          <td>/name/title</td>
+           <td>GET</td>
+                <td>A JSON object holding data about a single movie,
+                containing an ID, name, description, image URL, whether it's featured or not Example:
+            {
+              id: 1,
+              name:"bla bla",
+              description:" ",
+              image URL: ,
+            }
+          </td>
+        </tr>
+        <tr>
+          <td>Get director name</td>
+          <td>/director</td>
+            <td>GET</td>
+          <td>A JSON object holding data about the director (bio, birth year, death year)</td>
+        </tr>
+          <tr>
+          <td>Create new users</td>
+          <td>/newusers</td>
+            <td>POST</td>
+            <td>A JSON object to create new users</td>
+        </tr>
+        <tr>
+          <td>Allow users to update their user info (username)</td>
+          <td>/username</td>
+          <td>PUT</td>
+          <td>A JSON object update username</td>
+        </tr>
+      </table>
     <script type="module" src="server.js"></script>
   </body>
 </html>
