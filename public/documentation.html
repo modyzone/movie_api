@@ -61,8 +61,8 @@
                 containing an ID, name, description, image URL, whether it's featured or not Example:
             {
               id: 1,
-              name:"bla bla",
-              description:" ",
+              name:"Reservoir Dogs",
+              description:"Thriller ",
               image URL: ,
             }
           </td>
@@ -85,6 +85,14 @@
           <td>PUT</td>
           <td>A JSON object update username</td>
         </tr>
+        <tr>
+          <td>Allow users to remove a movie from their list of favorites</td>
+          <td>/movies/favorite</td>
+          <td>DELETE</td>
+          <td>A text message indicating
+            whether the movie was
+            successfully removed </td>
+          </tr>
       </table>
     <script type="module" src="server.js"></script>
   </body>
