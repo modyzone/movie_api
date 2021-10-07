@@ -17,42 +17,51 @@ app.use(express.static('public'));
 
 let topMovies = [
 {
+  id: 1,
    title: 'Reservoir Dogs',
    director: 'Quentin Tarantino'
 },
 {
+  id: 2,
    title: 'Pulp Fiction',
    director: 'Quentin Tarantino'
 },
 {
+  id: 3,
    title: 'In the Mouth of Madness',
    director: 'Stephanie Meyer'
 },
 {
+    id: 4,
     title: 'The Dark Knight Rises',
     director: 'Christopher Nolan'
 },
 {
+    id: 5,
     title: 'Mirage',
     director: 'Oriol Paulo'
 },
 {
+    id: 6,
     title: 'The Butterfly Effect',
     director: 'Eric Bress'
 },
 {
+    id: 7,
     title: 'Inception',
     director: 'Christopher Nolan'
 },
 {
+    id: 8,
     title: 'Escape Plan',
     director: 'Mikael Håfström'
 },
 {
+    id: 9,
     title:'The Matrix',
     director: 'Lana Wachowski'
 },
-{
+{   id: 10,
     title: 'Donnie Brasco',
     director: 'Mike Newell'
 }
@@ -68,7 +77,7 @@ app.get('/documentation' , (req, res) => {
 app.get('/movies', (req, res) => {
   res.json(topMovies);
 });
-app.get('/name/title', (req, res) => {
+app.get('/movies/title', (req, res) => {
   res.send('The Best 10 Movies!');
 });
 app.get('/director', (req, res) => {
@@ -82,18 +91,18 @@ app.post('/users', (req, res) => {
     const message = 'Missing name in request body';
     res.status(400).send(message);
   } else {
-    newUser.id = uuid.v4();
+    newUser.id = uuid;
     users.push(newUser);
     res.status(201).send(newUser);
   }
 });
 // Update the "users" to update the user info (username)
-app.put('/users/:name/', (req, res) => {
-  let users = users.find((user) => { return user.name === req.params.name });
+app.put('/users/:name/:favorite/:topic', (req, res) => {
+  let user = user.find((user) => { return user.name === req.params.name });
 
-  if (users) {
-    users.name[req.params.name] = parseInt(req.params.name);
-    res.status(201).send('User ' + req.params.name + ' was assigned a user of ' + req.params.name );
+  if (user) {
+    user.favorite[req.params.favorite] = parseInt(req.params.topic);
+    res.status(201).send('User ' + req.params.name + ' was assigned a topic of ' + req.params.topic +  ' in ' + req.params.favorite );
   } else {
     res.status(404).send('User with the name ' + req.params.name + ' was not found.');
   }
