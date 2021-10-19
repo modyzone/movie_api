@@ -60,8 +60,16 @@ app.get('/movies/:Title', (req, res) => {
      res.status(500).send('Error: ' + err);
    })
   });
-app.get('/director', (req, res) => {
-  res.send('Quentin Tarantino');
+
+app.get('/directors/:Name', (req, res) => {
+  Directors.findOne( { Name: req.params.Name })
+  .then( (director) => {
+    res.json(director);
+  })
+  .catch( (err) => {
+    console.error(err);
+    res.status(500).send('Error: ' + err);
+  });
 });
 // Allow new users to register.
 app.post('/users', (req, res) => {
@@ -118,7 +126,7 @@ app.post('/users', (req, res) => {
       });
   });
   // Get a user by username
-  app.get('/users/:Username', (req, res) => {
+  app.get('/Users/:Username', (req, res) => {
     Users.findOne({ Username: req.params.Username })
       .then((users) => {
         res.json(users);
