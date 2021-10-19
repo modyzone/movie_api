@@ -37,9 +37,7 @@ app.use(morgan('common'));
  app.get('/', (req, res)=> {
    res.send('Welcome to myFlixDB!');
 });
-app.get('/documentation' , (req, res) => {
-  res.sendFile('public/documentation.html',  { root: __dirname});
-});
+
 app.get('/movies', (req, res) => {
   Movies.find()
   .then( (movies) => {
@@ -126,7 +124,7 @@ app.post('/users', (req, res) => {
       });
   });
   // Get a user by username
-  app.get('/Users/:Username', (req, res) => {
+  app.get('/users/:Username', (req, res) => {
     Users.findOne({ Username: req.params.Username })
       .then((users) => {
         res.json(users);
@@ -165,7 +163,9 @@ app.delete('/users/:Username', (req, res) => {
   Users.findOneAndRemove({ Username: req.params.Username })
     .then((user) => {
       if (!user) {
-        res.status(400).send(req.params.Username + ' was deleted.');
+        res.status(400).send(req.params.Username + ' was not found.');
+      } else { 
+        res.status(200).send(req.params.Username + ' was deleted.');
       }
     })
     .catch((err) => {
@@ -173,6 +173,29 @@ app.delete('/users/:Username', (req, res) => {
       res.status(500).send('Error: ' + err);
     });
   });
+
+  // add movie to username's list
+app.post ('/users/:Username/movies/:MovieID', (req, res) => {
+  Users.findOneAndUpdate( { Username: req.params.Username } , { 
+    $push: { Fav: req.params.MovieID } 
+  },
+  { new: true }, // this line makes sure that the updates document is retuned
+  (err, updatedUser) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    } else {
+      res.json(updatedUser);
+    }
+  });
+});
+
+app.get('/documentation' , (req, res) => {
+  res.sendFile('public/documentation.html',  { root: __dirname});
+});
+// access documentation.html using express.static
+app.use('/documentation', express.static('public'));
+
 // listen for requests
 app.listen(8080, () => {
     console.log('Your app is listening on port 8080.');
@@ -180,5 +203,5 @@ app.listen(8080, () => {
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).send('Something broke!');
+  res.status(500).send('Something broke!')
 });
