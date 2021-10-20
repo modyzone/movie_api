@@ -60,9 +60,21 @@ app.get('/movies/:Title', (req, res) => {
   });
 
 app.get('/directors/:Name', (req, res) => {
-  Directors.findOne( { Name: req.params.Name })
+  Movies.findOne( { 'Director.Name': req.params.Name })
   .then( (director) => {
     res.json(director);
+  })
+  .catch( (err) => {
+    console.error(err);
+    res.status(500).send('Error: ' + err);
+  });
+});
+
+// get the movie by Genre
+app.get('/genres/:Name', (req, res) => {
+  Movies.findOne( { 'Genre.Name': req.params.Name })
+  .then( (genre) => {
+    res.json(genre);
   })
   .catch( (err) => {
     console.error(err);
@@ -76,16 +88,15 @@ app.post('/users', (req, res) => {
       if (user) {
         return res.status(400).send(req.body.Username + 'already exists');
       } else {
-        Users
-        .create({
+        Users.create({
           Username: req.body.Username,
           Password: req.body.Password,
           Email: req.body.Email,
           Birthday: req.body.Birthday
         })
-        .then((user) =>{res.status(201).json(user)
+        .then((user) =>{
+          res.status(201).json(user);
         })
-
         .catch((error) => {
           console.error(error);
           res.status(500).send('Error: ' + error);
@@ -96,7 +107,7 @@ app.post('/users', (req, res) => {
 
   // Add a movie to a user's list of favorites
 
-  app.post('/Users/:Username/movies/:MovieID', (req, res) => {
+  app.post('/users/:Username/movies/:MovieID', (req, res) => {
     Users.findOneAndUpdate({ Username: req.params.Username }, {
       $push: { FavoriteMovies: req.params.MovieID }
     },
@@ -112,7 +123,7 @@ app.post('/users', (req, res) => {
     });
 
   // Get all users
-  app.get('/Users', (req, res) => {
+  app.get('/users', (req, res) => {
     Users.find()
       .then((users) => {
           console.log("====users" , users)
@@ -154,6 +165,20 @@ app.put('/users/:Username', (req, res) => {
     res.json(updatedUser);
   }
 });
+});
+// Remove movie from username'list:
+app.delete('/users/:Username/movies/:MovieID', (req, res) => {
+Users.findOneAndUpdate({ Username: req.params.Username } ,
+  { $pull: { Fav: req.params.MovieID } },
+  { new: true },
+  (err, updatedUser) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    } else {
+      res.json(updatedUser);
+    }
+  });
 });
 
 // Allow users to remove a movie from their list of favorites 
