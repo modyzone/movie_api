@@ -25,9 +25,14 @@ mongoose.connect('mongodb://localhost:27017/myFlixDB', {
 
 // methodOverride = require('method-override');
 // set bodyparser
-// app.use(bodyParser.urlencoded({ extended: true}))
+ app.use(bodyParser.json());
+ app.use(bodyParser.urlencoded({ extended: true}));
+ 
+ let auth = require('./auth')(app);
+ const passport = require('passport');
+ require('./passport');
 // use bodyparser json to serialise data
-app.use(bodyParser.json());
+
 //use methodOverrid
 // app.use(methodOverride())
 //use morgan and static
