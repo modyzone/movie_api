@@ -105,7 +105,7 @@ app.post('/users', (req, res) => {
   
 
   // Get all users
-  app.get('/users', (req, res) => {
+  app.get('/users', passport.authenticate('jwt', { session: false }), (req, res) => {
     Users.find()
       .then((users) => {
           console.log("====users" , users)
