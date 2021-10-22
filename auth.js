@@ -3,7 +3,7 @@ const jwtSecret = 'your_jwt_secret'; // This has to the same key used in the JWT
 const jwt = require('jsonwebtoken'),
  passport = require('passport');
 
- require('/.passport'); // Your local passport file
+ require('./passport'); // Your local passport file
 
  let generateJWTToken = (user) => {
      return jwt.sign(user, jwtSecret, {
@@ -11,7 +11,7 @@ const jwt = require('jsonwebtoken'),
          expiresIn: '7d', // This specifies that the token will expire in 7 days
          algorithm: 'HS256' // This is the algorithm used to "sign" or encode the values of the JWT
      });
- }
+ };
  /* POST login. */
  module.exports = (router) => {
      router.post('/login', (req, res) => {

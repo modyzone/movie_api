@@ -3,8 +3,6 @@ const express = require('express'),
 uuid = require('uuid'),
 morgan = require('morgan');
 
-const { check, validationResult } = require('express-validator');
-
 const mongoose = require('mongoose');
 const Models = require('./models.js');
 const app = express();
@@ -17,14 +15,7 @@ mongoose.connect('mongodb://localhost:27017/myFlixDB', {
   useNewUrlParser: true, 
   useUnifiedTopology: true,
 });
-
-
-
-
-
 // import bodyPraser here
-
-
 // methodOverride = require('method-override');
 // set bodyparser
  app.use(bodyParser.json());
@@ -34,18 +25,17 @@ mongoose.connect('mongodb://localhost:27017/myFlixDB', {
  const passport = require('passport');
  require('./passport');
 // use bodyparser json to serialise data
-
 //use methodOverrid
 // app.use(methodOverride())
 //use morgan and static
 app.use(morgan('common'));
-// app.use(express.static('public'));
+app.use(express.static('public'));
 // GET requests method for request the HTTP (GET, POST, PUT, PATCH, DELETE)
  app.get('/', (req, res)=> {
    res.send('Welcome to myFlixDB!');
 });
 
-app.get('/movies', (req, res) => {
+app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) => {
   Movies.find()
   .then( (movies) => {
     res.status(201).json(movies);
