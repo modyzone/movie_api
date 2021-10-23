@@ -1,4 +1,6 @@
-const express = require('express'),
+const express = require('express');
+ 
+ 
  bodyParser = require('body-parser'),
 uuid = require('uuid'),
 morgan = require('morgan');
@@ -6,6 +8,18 @@ morgan = require('morgan');
 const mongoose = require('mongoose');
 const Models = require('./models.js');
 const app = express();
+const cool = require('cool-ascii-faces');
+
+const path = require('path');
+const PORT = process.env.PORT || 5000;
+express()
+.use(express.static(path.join(__dirname, 'public')))
+.set('views', path.join(__dirname, 'views'))
+.set('view engine', 'ejs')
+.get('/', (req, res) => res.render('pages/index'))
+.get('/cool', (req, res) => res.send(cool()))
+.listen(PORT, () => console.log(`Listening on ${ PORT }`));
+const { check, validationResult } = require('express-validator');
 
 const Movies = Models.Movie;
 const Users = Models.User;
@@ -15,18 +29,30 @@ mongoose.connect('mongodb://localhost:27017/myFlixDB', {
   useNewUrlParser: true, 
   useUnifiedTopology: true,
 });
-// import bodyPraser here
-// methodOverride = require('method-override');
-// set bodyparser
- app.use(bodyParser.json());
- app.use(bodyParser.urlencoded({ extended: true}));
- 
+ const cors = require('cors');
+ let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
+ app.use(cors({
+   origin: (origin, callback) => {
+     if(!origin) return callback(null, true);
+     if(allowedOrigins.indexOf(origin) === -1){ // If a specific origin isn't found on the list of allowed origins
+    let message = 'The CORS policy for this application doesn not allow access from origin' + origin;
+  return callback(new Error(message), false);
+}
+return callback(null, true);
+   }
+ }));
  let auth = require('./auth')(app);
  const passport = require('passport');
  require('./passport');
+
 // use bodyparser json to serialise data
 //use methodOverrid
 // app.use(methodOverride())
+// import bodyPraser here
+// methodOverride = require('method-override');
+// set bodyparser
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true}));
 //use morgan and static
 app.use(morgan('common'));
 app.use(express.static('public'));
@@ -80,9 +106,11 @@ app.get('/genres/:Name', (req, res) => {
 });
 // Allow new users to register.
 app.post('/users', (req, res) => {
-  Users.findOne({ Username: req.body.Username })
+  let hashedPassword = Users.hashPassword(req.body.Password);
+  Users.findOne({ Username: req.body.Username }) // Search to see if a user with the requested username already exists
     .then((user) => {
       if (user) {
+        // If the user is found, send a response that it already exists
         return res.status(400).send(req.body.Username + 'already exists');
       } else {
         Users.create({
@@ -91,19 +119,21 @@ app.post('/users', (req, res) => {
           Email: req.body.Email,
           Birthday: req.body.Birthday
         })
-        .then((user) =>{
+        .then((user) => {
           res.status(201).json(user);
         })
         .catch((error) => {
           console.error(error);
           res.status(500).send('Error: ' + error);
-        })
+        });
       }
     })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send('Error: ' + error);
+    });
   });
-
   
-
   // Get all users
   app.get('/users', passport.authenticate('jwt', { session: false }), (req, res) => {
     Users.find()
@@ -207,9 +237,10 @@ app.get('/documentation' , (req, res) => {
 app.use('/documentation', express.static('public'));
 
 // listen for requests
-app.listen(8080, () => {
-    console.log('Your app is listening on port 8080.');
-  });
+const port = process.env.PORT || 8080;
+app.listen(port, '0.0.0.0',() => {
+  console.log('Listening on Port ' + port);
+});
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
