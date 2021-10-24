@@ -1,6 +1,4 @@
 const express = require('express');
- 
- 
  bodyParser = require('body-parser'),
 uuid = require('uuid'),
 morgan = require('morgan');
@@ -9,7 +7,13 @@ const mongoose = require('mongoose');
 const Models = require('./models.js');
 const app = express();
 const cool = require('cool-ascii-faces');
-
+const { Pool } = require('pg');
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
 const path = require('path');
 const PORT = process.env.PORT || 5000;
 express()
@@ -17,6 +21,18 @@ express()
 .set('views', path.join(__dirname, 'views'))
 .set('view engine', 'ejs')
 .get('/', (req, res) => res.render('pages/index'))
+.get('/db', async (req, res) => {
+  try {
+    const client = await pool.connect();
+    const result = await client.query('SELECT * FROM test_table');
+    const results = { 'result': (result) ? result.rows : null};
+    res.render('pages/db', results );
+    client.release();
+  } catch (err) {
+    console.error(err);
+    res.send('Error ' + err);
+  }
+})
 .get('/cool', (req, res) => res.send(cool()))
 .listen(PORT, () => console.log(`Listening on ${ PORT }`));
 const { check, validationResult } = require('express-validator');
@@ -104,6 +120,16 @@ app.get('/genres/:Name', (req, res) => {
     res.status(500).send('Error: ' + err);
   });
 });
+//times repeats an action depending on the value of TIMES envirnomental variable
+app.get('/times', (req, res) => res.send(showTimes()))
+showTimes = () => {
+  let result = '';
+  const times = process.env.TIMES || 5;
+  for (i = 0; i < times; i++) {
+    result += i + ' ';
+  }
+  return result;
+};
 // Allow new users to register.
 app.post('/users', (req, res) => {
   let hashedPassword = Users.hashPassword(req.body.Password);

@@ -16,16 +16,18 @@
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
+    "pg": "^8.7.1",
+    "psql": "0.0.1",
     "uuid": "^8.3.2"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
   },
-
-  "repository" : {     
-    "type" : "git",
-     "url" : "http://github.com/npm/express.git" 
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/npm/express.git"
   },
   "keywords": [],
   "author": "",
