@@ -45,7 +45,7 @@ const Users = Models.User;
    //useNewUrlParser: true, 
    //useUnifiedTopology: true,
  //});
- mongoose.connect( 'process.env.CONNECTION_URI', { useNewUrlParser: true, useUnifiedTopology: true });
+ ( process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
  const cors = require('cors');
  let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
