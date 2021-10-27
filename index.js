@@ -115,6 +115,18 @@ showTimes = () => {
   }
   return result;
 };
+//GET all users:
+app.get('/users', (req, res) => {
+  Users.find()
+    .then((users) => {
+        console.log("====users" , users)
+      res.status(201).json(users);
+    })
+    .catch((err) => {
+      console.error(err)
+      res.status(500).send('Error: ' + err);
+    });
+});
 // Allow new users to register.
 app.post('/users', (req, res) => {
   let hashedPassword = Users.hashPassword(req.body.Password);
