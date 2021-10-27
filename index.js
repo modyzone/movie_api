@@ -266,13 +266,12 @@ app.get('/documentation' , (req, res) => {
 // access documentation.html using express.static
 app.use('/documentation', express.static('public'));
 
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!')
+});
 // listen for requests
 const port = process.env.PORT || 8080;
 app.listen(port, '0.0.0.0',() => {
   console.log('Listening on Port ' + port);
-});
-
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send('Something broke!')
 });
