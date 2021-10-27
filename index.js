@@ -129,7 +129,7 @@ app.get('/users', (req, res) => {
 });
 // Allow new users to register.
 app.post('/users', (req, res) => {
-  let hashedPassword = Users.hashPassword(req.body.Password);
+  
   Users.findOne({ Username: req.body.Username }) // Search to see if a user with the requested username already exists
     .then((user) => {
       if (user) {
