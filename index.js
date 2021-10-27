@@ -45,7 +45,10 @@ const Users = Models.User;
    //useNewUrlParser: true, 
    //useUnifiedTopology: true,
  //});
- ( process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+ mongoose.connect('mongodb+srv://myFlixDBadmin:batmanbegins1!@myflixdb.kq29u.mongodb.net/myFlixDB?retryWrites=true&w=majority', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  });
 
  const cors = require('cors');
  let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
