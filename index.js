@@ -128,50 +128,88 @@ app.get('/users', (req, res) => {
     });
 });
 // Allow new users to register.
-app.post(
-  "/users",
-  [
-    check("Username", "Username is required").isLength({ min: 5 }),
-    check(
-      "Username",
-      "Username contains non alphanumeric characters - not allowed."
-    ).isAlphanumeric(),
-    check("Password", "Password is required").not().isEmpty(),
-    check("Email", "Email does not appear to be valid").isEmail(),
-  ],
-  (req, res) => {
+/*app.post('/users', (req, res) => {
+  let hashedPassword = Users.hashPassword(req.body.Password);
+  Users.findOne({ Username: req.body.Username })
+    .then((user) => {
+      if (user) {
+        return res.status(400).send(req.body.Username + 'already exists');
+      } else {
+        Users.create({
+          Username: req.body.Username,
+          Password: req.body.Password,
+          Email: req.body.Email,
+          Birthday: req.body.Birthday
+        })
+        .then((user) =>{
+          res.status(201).json(user);
+        })
+        .catch((error) => {
+          console.error(error);
+          res.status(500).send('Error: ' + error);
+        })
+      }
+    })
+  });*/
+  //Allow new users to register:
+  app.post('/users', 
+    [//validation for request
+        check('Username', 'Username is required').isLength({min: 5}),
+        check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+        check('Password', 'Password is required').not().isEmpty(),
+        check('Email', 'Email does not appeared to be valid.').isEmail()
+    ], (req,res) => {
+    
+    //check the validation object for errors
     let errors = validationResult(req);
 
-    if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
+    if(!errors.isEmpty()) {
+        return res.status(422).json({errors: errors.array()});
     }
+
+    //hashing the submitted password
     let hashedPassword = Users.hashPassword(req.body.Password);
-    Users.findOne({ Username: req.body.Username })
-      .then((user) => {
+    
+    Users.findOne({Username: req.body.Username})//search to see if the username is already existed
+    .then((user) => {
         if (user) {
-          return res.status(409).send(req.body.Username + " already exists");
+            //response when the user is already existed
+            return res.status(400).send(req.body.Username + ' already exists');
         } else {
-          Users.create({
-            Username: req.body.Username,
-            Password: hashedPassword,
-            Email: req.body.Email,
-            Birthday: req.body.Birthday,
-          })
-            .then((user) => {
-              res.status(200).json(user);
+            Users
+            .create({
+                Name: req.body.Name,
+                Username : req.body.Username,
+                Password: hashedPassword,//using hashed password for the passowrd field
+                Email: req.body.Email,
+                Birthday: req.body.Birthday
+            })//response back to client letting them know that it has been completed
+            .then((user) => {res.status(201).json(user)})
+            .catch((error) => {//catch any problem that is encountered
+                console.error(error);
+                //response back to client letting them know that there is an error
+                res.status(500).send('Error: ' + error);
             })
-            .catch((error) => {
-              console.error(error);
-              res.status(500).send("Error: " + error);
-            });
         }
-      })
-      .catch((error) => {
+    })
+    .catch((error) => {//catch any problem that is encountered
         console.error(error);
-        res.status(500).send("Error: " + error);
-      });
-  }
-);
+        //response back to client letting them know that there is an error
+        res.status(500).send('Error: ' + error);
+    });
+});
+
+// Get a user by username
+app.get('/users/:Username',  passport.authenticate('jwt', {session:false}), (req, res) => {
+    Users.findOne({Username: req.params.Username})
+        .then((user) => {
+            res.json(user);
+        })
+        .catch((err) => {//error callback
+            console.error(err);
+            res.status(500).send('Error: ' + err);
+    });
+});
   // Get a user by username
   app.get('/users/:Username', (req, res) => {
     Users.findOne({ Username: req.params.Username })
