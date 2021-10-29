@@ -24,7 +24,7 @@ const Users = Models.User;
  /*mongoose.connect('mongodb://localhost:27017/myFlixDB', { 
      useNewUrlParser: true, 
      useUnifiedTopology: true,
- /*});
+ });*/
  /*mongoose.connect('mongodb+srv://myFlixDBadmin:batmanbegins1!@myflixdb.kq29u.mongodb.net/myFlixDB?retryWrites=true&w=majority', {
    useNewUrlParser: true,
    useUnifiedTopology: true,
@@ -199,6 +199,7 @@ app.get('/users', (req, res) => {
       });
   });
 
+
 // Get a user by username
 app.get('/users/:Username',  passport.authenticate('jwt', {session:false}), (req, res) => {
     Users.findOne({Username: req.params.Username})
@@ -211,7 +212,7 @@ app.get('/users/:Username',  passport.authenticate('jwt', {session:false}), (req
     });
 });
   // Get a user by username
-  app.get('/users/:Username', (req, res) => {
+ /* app.get('/users/:Username', (req, res) => {
     Users.findOne({ Username: req.params.Username })
       .then((users) => {
         res.json(users);
@@ -220,7 +221,7 @@ app.get('/users/:Username',  passport.authenticate('jwt', {session:false}), (req
         console.error(error);
         res.status(500).send('Error: ' + err);
       });
-      });
+      });*/
  
 // Update the "users" to update the user info (username)
 app.put('/users/:Username', (req, res) => {
@@ -246,7 +247,7 @@ app.put('/users/:Username', (req, res) => {
 app.delete('/users/:Username/movies/:MovieID', (req, res) => {
 Users.findOneAndUpdate({ Username: req.params.Username },
 
-  { $pull: { Fav: req.params.MovieID } },
+  { $pull: { FavoriteMovies: req.params.MovieID } },
   
   { new: true }
   ).then((user)=>{
@@ -281,7 +282,7 @@ app.delete('/users/:Username', (req, res) => {
   // add movie to username's list
 app.post('/users/:Username/movies/:MovieID', (req, res) => {
   Users.findOneAndUpdate( { Username: req.params.Username } , { 
-    $push: { Fav: req.params.MovieID } 
+    $push: { FavoriteMovies: req.params.MovieID } 
   },
   { new: true }, // this line makes sure that the updates document is retuned
   (err, updatedUser) => {
