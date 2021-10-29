@@ -7,13 +7,13 @@ const mongoose = require('mongoose');
 const Models = require('./models.js');
 const app = express();
 const cool = require('cool-ascii-faces');
-const { Pool } = require('pg');
+/*const { Pool } = require('pg');
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false
   }
-});
+});*/
 
 
 
@@ -21,17 +21,17 @@ const Movies = Models.Movie;
 const Users = Models.User;
 
 
- //mongoose.connect('mongodb://localhost:27017/myFlixDB', { 
-   //useNewUrlParser: true, 
-   //useUnifiedTopology: true,
- //});
- //mongoose.connect('mongodb+srv://myFlixDBadmin:batmanbegins1!@myflixdb.kq29u.mongodb.net/myFlixDB?retryWrites=true&w=majority', {
-  //useNewUrlParser: true,
-  //useUnifiedTopology: true,
-  //});
+ /*mongoose.connect('mongodb://localhost:27017/myFlixDB', { 
+     useNewUrlParser: true, 
+     useUnifiedTopology: true,
+ /*});
+ /*mongoose.connect('mongodb+srv://myFlixDBadmin:batmanbegins1!@myflixdb.kq29u.mongodb.net/myFlixDB?retryWrites=true&w=majority', {
+   useNewUrlParser: true,
+   useUnifiedTopology: true,
+   });*/
   mongoose.connect( process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
- const cors = require('cors');
+ /*const cors = require('cors');
  let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
  app.use(cors({
    origin: (origin, callback) => {
@@ -42,7 +42,7 @@ const Users = Models.User;
 }
 return callback(null, true);
    }
- }));
+ }));*/
  let auth = require('./auth')(app);
  const passport = require('passport');
  require('./passport');
@@ -106,7 +106,7 @@ app.get('/genres/:Name', (req, res) => {
   });
 });
 //times repeats an action depending on the value of TIMES envirnomental variable
-app.get('/times', (req, res) => res.send(showTimes()))
+/*app.get('/times', (req, res) => res.send(showTimes()))
 showTimes = () => {
   let result = '';
   const times = process.env.TIMES || 5;
@@ -114,7 +114,7 @@ showTimes = () => {
     result += i + ' ';
   }
   return result;
-};
+};*/
 //GET all users:
 app.get('/users', (req, res) => {
   Users.find()
@@ -128,34 +128,50 @@ app.get('/users', (req, res) => {
     });
 });
 // Allow new users to register.
-app.post('/users', (req, res) => {
-  
-  Users.findOne({ Username: req.body.Username }) // Search to see if a user with the requested username already exists
-    .then((user) => {
-      if (user) {
-        // If the user is found, send a response that it already exists
-        return res.status(400).send(req.body.Username + 'already exists');
-      } else {
-        Users.create({
-          Username: req.body.Username,
-          Password: req.body.Password,
-          Email: req.body.Email,
-          Birthday: req.body.Birthday
-        })
-        .then((user) => {
-          res.status(201).json(user);
-        })
-        .catch((error) => {
-          console.error(error);
-          res.status(500).send('Error: ' + error);
-        });
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-      res.status(500).send('Error: ' + error);
-    });
-  });
+app.post(
+  "/users",
+  [
+    check("Username", "Username is required").isLength({ min: 5 }),
+    check(
+      "Username",
+      "Username contains non alphanumeric characters - not allowed."
+    ).isAlphanumeric(),
+    check("Password", "Password is required").not().isEmpty(),
+    check("Email", "Email does not appear to be valid").isEmail(),
+  ],
+  (req, res) => {
+    let errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    let hashedPassword = Users.hashPassword(req.body.Password);
+    Users.findOne({ Username: req.body.Username })
+      .then((user) => {
+        if (user) {
+          return res.status(409).send(req.body.Username + " already exists");
+        } else {
+          Users.create({
+            Username: req.body.Username,
+            Password: hashedPassword,
+            Email: req.body.Email,
+            Birthday: req.body.Birthday,
+          })
+            .then((user) => {
+              res.status(200).json(user);
+            })
+            .catch((error) => {
+              console.error(error);
+              res.status(500).send("Error: " + error);
+            });
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        res.status(500).send("Error: " + error);
+      });
+  }
+);
   // Get a user by username
   app.get('/users/:Username', (req, res) => {
     Users.findOne({ Username: req.params.Username })
@@ -188,7 +204,7 @@ app.put('/users/:Username', (req, res) => {
   }
 });
 });
-// Remove movie from username'list:
+// Remove movie from username list by its ID:
 app.delete('/users/:Username/movies/:MovieID', (req, res) => {
 Users.findOneAndUpdate({ Username: req.params.Username },
 

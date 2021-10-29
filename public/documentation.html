@@ -53,9 +53,15 @@
           <td>A JSON object holding data about all the movies</td>
         </tr>
         <tr>
+          <td>Get movies by the Genre</td>
+          <td>/genres/Name</td>
+          <td>GET</td>
+          <td>A JSON object holding data about the movies genre</td>
+        </tr>
+        <tr>
           <td>Get data about a single movie by name
             (description, genre, director, image URL, whether it’s featured or not)</td>
-          <td>/name/title</td>
+          <td>/name/Title</td>
            <td>GET</td>
                 <td>A JSON object holding data about a single movie,
                 containing an ID, name, description, image URL, whether it's featured or not Example:
@@ -73,6 +79,12 @@
             <td>GET</td>
           <td>A JSON object holding data about the director (bio, birth year, death year)</td>
         </tr>
+        <tr>
+          <td>Get users</td>
+          <td>/users</td>
+          <td>GET</td>
+          <td>A JSON object holding data about all the users</td>
+        </tr>
           <tr>
           <td>Create new users</td>
           <td>/newusers</td>
@@ -80,10 +92,22 @@
             <td>A JSON object to create new users</td>
         </tr>
         <tr>
+          <td>Get users by username</td>
+          <td>/users/Username</td>
+          <td>GET</td>
+          <td>A JSON object to get users by username</td>
+        </tr>
+        <tr>
           <td>Allow users to update their user info (username)</td>
           <td>/username</td>
           <td>PUT</td>
-          <td>A JSON object update username</td>
+          <td>A JSON object to update username</td>
+        </tr>
+        <tr>
+          <td>Delete movies from username list by its ID</td>
+          <td>/users/:Username/movies/MovieID</td>
+          <td>DELETE</td>
+          <td>A JSON object to delete the movie in the username list</td>
         </tr>
         <tr>
           <td>Allow users to remove a movie from their list of favorites</td>
