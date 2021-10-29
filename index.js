@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const Models = require('./models.js');
 const app = express();
 const cool = require('cool-ascii-faces');
+const { check, validationResult } = require('express-validator');
 /*const { Pool } = require('pg');
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -14,7 +15,6 @@ const pool = new Pool({
     rejectUnauthorized: false
   }
 });*/
-
 
 
 const Movies = Models.Movie;
