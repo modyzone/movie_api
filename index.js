@@ -33,7 +33,7 @@ const Users = Models.User;
 mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 const cors = require('cors');
-let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'http://localhost:1234'];
+let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'http://localhost:1234','https://mysterious-movies.netlify.app'];
 app.use(cors());
 let auth = require('./auth')(app);
 const passport = require('passport');
