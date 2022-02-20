@@ -33,7 +33,7 @@ const Users = Models.User;
 mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 const cors = require('cors');
-let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'http://localhost:1234','https://mysterious-movies.netlify.app'];
+let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'http://localhost:1234', 'https://mysterious-movies.netlify.app'];
 app.use(cors());
 let auth = require('./auth')(app);
 const passport = require('passport');
@@ -274,7 +274,7 @@ app.delete('/users/:Username', (req, res) => {
 });
 
 // add movie to username's list
-app.post('/users/:Username/movies/:MovieID', (req, res) => {
+app.put('/users/:Username/movies/:MovieID', (req, res) => {
   Users.findOneAndUpdate({ Username: req.params.Username }, {
     $push: { FavoriteMovies: req.params.MovieID }
   },
