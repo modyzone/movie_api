@@ -24,7 +24,7 @@ mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnified
  * @default
  */
 const cors = require('cors');
-let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'http://localhost:1234', 'https://mysterious-movies.netlify.app'];
+let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'http://localhost:1234', 'https://stoic-lamarr-a93db0.netlify.app'];
 app.use(cors());
 let auth = require('./auth')(app);
 const passport = require('passport');
