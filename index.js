@@ -46,6 +46,9 @@ app.get('/', (req, res) => {
   res.send('Welcome to myFlixDB!');
 });
 
+
+const Movies = Models.Movie;
+const Users = Models.User;
 /**
  * /movies endpoint
  * method: get
