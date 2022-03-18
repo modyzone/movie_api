@@ -51,7 +51,7 @@ const Users = Models.User;
   });
 
  const cors = require('cors');
- let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
+ let allowedOrigins = ['http://localhost:8080', 'http://testsite.com','https://stoic-lamarr-a93db0.netlify.app'];
  app.use(cors({
    origin: (origin, callback) => {
      if(!origin) return callback(null, true);
